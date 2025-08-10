@@ -1,0 +1,20 @@
+# Core dependencies
+python-dotenv==1.0.0
+langdetect==1.0.9
+googletrans==4.0.0-rc1
+
+# LLM API client
+google-generativeai==0.3.2
+
+# Web UI
+streamlit==1.28.1
+
+# HTTP requests (fallback for API calls)
+requests==2.31.0
+
+# Type hints support - updated for Python 3.12 compatibility
+typing-extensions>=4.9.0
+
+# Development and testing (optional)
+pytest==7.4.3
+pytest-asyncio==0.21.1
