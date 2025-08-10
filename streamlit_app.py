@@ -343,11 +343,9 @@ def display_sidebar():
 def display_chat_interface():
     st.markdown("### 💬 Chat Interface")
     
-    user_input = st.chat_input("Ask your question here...")
-    
-    if user_input:
-        process_user_input(user_input)
-        st.rerun()
+    # Note: st.chat_input() must be called at the top level of main()
+    # This function just displays the header
+    pass
 
 def process_user_input(user_input: str):
     if not st.session_state.chatbot_initialized:
@@ -449,6 +447,13 @@ def main():
             st.error("❌ Failed to initialize chatbot. Please check your configuration.")
             st.stop()
     
+    # Place chat input at the very top level (this is required for st.chat_input)
+    st.markdown("### 💬 Chat Interface")
+    user_input = st.chat_input("Ask your question here...")
+    
+    if user_input:
+        process_user_input(user_input)
+    
     col1, col2 = st.columns([1, 2])
     
     with col1:
@@ -456,9 +461,6 @@ def main():
     
     with col2:
         display_error_messages()
-        
-        display_chat_interface()
-        
         display_chat_history()
 
 if __name__ == "__main__":
