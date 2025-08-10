@@ -266,16 +266,55 @@ def initialize_chatbot():
             """)
             return None, None, None, None
         
+        # Initialize components
         client = GeminiClient(api_key)
         detector = LanguageDetector()
         prompt_builder = PromptBuilder()
         session_manager = SessionManager()
-        
+
+        # Test the client with better error handling
+        try:
+            if not client.test_connection():
+                st.error("❌ Failed to test Gemini client connection.")
+                st.info("""
+                **Common Issues & Solutions:**
+                
+                1. **API Key Invalid/Expired**: Get a new key from [Google AI Studio](https://aistudio.google.com/)
+                2. **Quota Exceeded**: Check your billing and usage limits
+                3. **Model Access**: Ensure you have access to Gemini models
+                
+                **Quick Fix**: Try getting a fresh API key from [Google AI Studio](https://aistudio.google.com/)
+                """)
+                return None, None, None, None
+        except Exception as e:
+            st.error(f"❌ Connection test failed: {e}")
+            st.info("""
+            **Troubleshooting Steps:**
+            
+            1. **Check API Key**: Ensure it's valid and not expired
+            2. **Verify Billing**: Make sure billing is enabled for Gemini API
+            3. **Check Quota**: Verify you haven't exceeded usage limits
+            4. **Get New Key**: Try generating a fresh API key
+            
+            **Need Help?** Visit [Google AI Studio](https://aistudio.google.com/) for support.
+            """)
+            return None, None, None, None
+
         st.session_state.chatbot_initialized = True
         return client, detector, prompt_builder, session_manager
         
     except Exception as e:
         st.error(f"❌ Error initializing chatbot: {e}")
+        st.info("""
+        **Troubleshooting Steps:**
+        
+        1. **Check API Key**: Ensure it's valid and not expired
+        2. **Verify Billing**: Make sure billing is enabled for Gemini API
+        3. **Check Quota**: Verify you haven't exceeded usage limits
+        4. **Get New Key**: Try generating a fresh API key
+        
+        **Need Help?** Visit [Google AI Studio](https://aistudio.google.com/) for support.
+        """)
         return None, None, None, None
 
 def display_header():
@@ -338,6 +377,11 @@ def display_sidebar():
         **Setup Required:**
         1. Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/)
         2. Add it to Streamlit Cloud secrets
+        
+        **Troubleshooting:**
+        - Check if your API key is valid and not expired
+        - Verify billing is enabled for Gemini API
+        - Ensure you haven't exceeded quota limits
         """)
 
 def display_chat_interface():
@@ -435,6 +479,25 @@ def display_error_messages():
             <strong>❌ Error:</strong> {st.session_state.error_message}
         </div>
         """, unsafe_allow_html=True)
+    
+    # Display initialization errors if chatbot failed to initialize
+    if not st.session_state.chatbot_initialized:
+        st.error("❌ Chatbot initialization failed")
+        st.info("""
+        **Please check the following:**
+        
+        1. **API Key**: Ensure your `GEMINI_API_KEY` is valid and not expired
+        2. **Billing**: Verify billing is enabled for Gemini API in Google Cloud Console
+        3. **Quota**: Check if you've exceeded your API usage limits
+        4. **Model Access**: Ensure you have access to Gemini models
+        
+        **Quick Solutions:**
+        - Get a fresh API key from [Google AI Studio](https://aistudio.google.com/)
+        - Check your [Google Cloud Console](https://console.cloud.google.com/) billing status
+        - Wait for quota reset if you've exceeded limits
+        
+        **Need Help?** Visit [Google AI Studio Support](https://aistudio.google.com/) for assistance.
+        """)
 
 def main():
     initialize_session_state()
@@ -445,6 +508,27 @@ def main():
         client, detector, prompt_builder, session_manager = initialize_chatbot()
         if not all([client, detector, prompt_builder, session_manager]):
             st.error("❌ Failed to initialize chatbot. Please check your configuration.")
+            st.info("""
+            **Common Issues & Solutions:**
+            
+            1. **API Key Problems**: 
+               - Check if your `GEMINI_API_KEY` is valid and not expired
+               - Ensure the key is properly set in `.env` file or Streamlit secrets
+            
+            2. **Billing Issues**:
+               - Verify billing is enabled for Gemini API in [Google Cloud Console](https://console.cloud.google.com/)
+               - Check for any outstanding charges or payment issues
+            
+            3. **Quota Limits**:
+               - You may have exceeded your daily/monthly API usage limits
+               - Wait for quota reset or upgrade your plan
+            
+            4. **Model Access**:
+               - Ensure you have access to the Gemini models you're trying to use
+               - Some models may require specific permissions or plans
+            
+            **Quick Fix**: Get a fresh API key from [Google AI Studio](https://aistudio.google.com/)
+            """)
             st.stop()
     
     # Place chat input at the very top level (this is required for st.chat_input)
