@@ -56,6 +56,10 @@ GEMINI_API_KEY=your_actual_api_key_here
 2. Create a new API key
 3. Copy the key to your `.env` file
 
+**Environment Variables:**
+- `GEMINI_API_KEY`: Your Google Gemini API key (required)
+- `MAX_RETRIES`: Maximum retry attempts for API calls (default: 3)
+
 ### 3. Run the Application
 
 #### CLI Interface
@@ -67,6 +71,20 @@ python main.py
 ```bash
 streamlit run streamlit_app.py
 ```
+
+## 🚀 Deployment
+
+### Streamlit Cloud Deployment
+This app is ready for deployment on Streamlit Cloud! See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+
+**Quick Steps:**
+1. Push your code to GitHub
+2. Connect to [Streamlit Cloud](https://share.streamlit.io/)
+3. Add your `GEMINI_API_KEY` to Streamlit secrets
+4. Deploy!
+
+### Local Development
+For local testing, create a `.env` file with your API key.
 
 ## Usage Examples
 

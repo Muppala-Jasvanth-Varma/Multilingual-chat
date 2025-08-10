@@ -247,10 +247,23 @@ def initialize_session_state():
 def initialize_chatbot():
     """Initialize the chatbot components."""
     try:
+        # Check for API key in multiple sources
         api_key = os.getenv('GEMINI_API_KEY')
+        
+        # If not in environment, check Streamlit secrets
+        if not api_key and hasattr(st, 'secrets'):
+            api_key = st.secrets.get('GEMINI_API_KEY')
+        
         if not api_key:
-            st.error("❌ GEMINI_API_KEY not found in environment variables.")
-            st.info("Please create a .env file with your Gemini API key.")
+            st.error("❌ GEMINI_API_KEY not found.")
+            st.info("""
+            **For Local Development:** Create a `.env` file with your Gemini API key.
+            
+            **For Streamlit Cloud:** Go to your app settings → Secrets and add:
+            ```
+            GEMINI_API_KEY = "your_api_key_here"
+            ```
+            """)
             return None, None, None, None
         
         client = GeminiClient(api_key)
@@ -321,6 +334,11 @@ def display_sidebar():
         st.sidebar.success("✅ Connected")
     else:
         st.sidebar.error("❌ Disconnected")
+        st.sidebar.info("""
+        **Setup Required:**
+        1. Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/)
+        2. Add it to Streamlit Cloud secrets
+        """)
 
 def display_chat_interface():
     st.markdown("### 💬 Chat Interface")
